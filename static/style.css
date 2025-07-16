@@ -1,0 +1,217 @@
+/* Estilos Gerais */
+body {
+  font-family: Arial, sans-serif;
+  color: #eee;
+  margin: 0;
+  background-color: #121212;
+}
+
+h1 {
+  color: #e94560;
+  text-align: center;
+}
+
+/* --- Página Inicial (index.html) --- */
+body.page-index {
+  height: 100%;
+  background-color: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button#iniciar {
+  padding: 20px 60px;
+  font-size: 2rem;
+  background-color: #16213e;
+  border: none;
+  border-radius: 10px;
+  color: #e94560;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(233, 69, 96, 0.5);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button#iniciar:hover {
+  background-color: #e94560;
+  color: white;
+  transform: scale(1.05);
+}
+
+button#iniciar:active {
+  transform: scale(0.95);
+}
+
+/* --- Página do Jogo (jogo.html) --- */
+body.page-jogo {
+  padding: 20px;
+}
+
+.categoria {
+  margin-top: 30px;
+}
+
+.categoria h2 {
+  color: #f7d794;
+}
+
+.botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button.palpite {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2c2c54;
+  color: white;
+  cursor: pointer;
+}
+
+button.palpite:hover {
+  background-color: #575fcf;
+}
+
+button.palpite.saiu {
+  opacity: 0.5;
+  text-decoration: line-through;
+  cursor: default;
+  background-color: #555 !important;
+}
+
+.probabilidades {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.acoes {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.acoes a {
+  padding: 10px;
+  border: 1px solid #e94560;
+  border-radius: 5px;
+  color: #e94560;
+  text-decoration: none;
+  text-align: center;
+}
+
+.acoes a:hover {
+  background-color: #e94560;
+  color: black;
+}
+
+.sugestao {
+  margin-top: 40px;
+  padding: 20px;
+  border: 2px dashed #e94560;
+  border-radius: 10px;
+  background-color: #1f1f1f;
+}
+
+.sugestao h2 {
+  margin-top: 0;
+  color: #e94560;
+}
+
+/* Modal de Finalização */
+#finalizarModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+#finalizarModal > div {
+  background: #222;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 350px;
+  margin: auto;
+}
+
+#finalizarModal h2 {
+  color: #e94560;
+}
+
+#finalizarModal label {
+  color: #eee;
+  display: block;
+  margin-bottom: 10px;
+}
+
+#finalizarModal select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #e94560;
+  border-radius: 5px;
+  background: #333;
+  color: #eee;
+}
+
+#finalizarModal button {
+  background: #e94560;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#finalizarModal button:hover {
+  background: #575fcf;
+}
+
+
+/* --- Página de Histórico (historico.html) --- */
+body.page-historico {
+    padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  background: #1f1f1f;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  text-align: center;
+}
+
+th {
+  background-color: #e94560;
+  color: #fff;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.voltar-jogo {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: #e94560;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  text-align: center;
+}

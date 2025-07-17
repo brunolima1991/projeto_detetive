@@ -29,7 +29,7 @@
                 <div id="cartas-container">
                     <!-- O primeiro seletor de carta -->
                     <div class="seletor-carta">
-                        <select name="cartas[]" required>
+                        <select name="cartas[]" class="seletor-de-carta" required>
                             <option value="" disabled selected>Selecione uma carta...</option>
                             {% for carta in todas_as_cartas %}
                             <option value="{{ carta }}">{{ carta }}</option>
@@ -50,13 +50,48 @@
             document.getElementById('form-setup').style.display = 'block';
         });
 
+        const cartasContainer = document.getElementById('cartas-container');
+        const todasAsCartas = {{ todas_as_cartas|tojson }};
+
+        // Função para atualizar as opções em todos os seletores
+        function updateAvailableCards() {
+            const allSelects = document.querySelectorAll('.seletor-de-carta');
+            const selectedValues = new Set();
+            
+            // Recolhe todos os valores já selecionados
+            allSelects.forEach(s => {
+                if (s.value) {
+                    selectedValues.add(s.value);
+                }
+            });
+
+            // Itera sobre cada seletor para atualizar as suas opções
+            allSelects.forEach(select => {
+                const currentValue = select.value;
+                Array.from(select.options).forEach(option => {
+                    // Não mexe na opção placeholder
+                    if (option.value) {
+                        // Esconde a opção se ela foi selecionada em OUTRO seletor
+                        if (selectedValues.has(option.value) && option.value !== currentValue) {
+                            option.style.display = 'none';
+                        } else {
+                            // Garante que a opção está visível se não estiver selecionada em outro lugar
+                            option.style.display = 'block';
+                        }
+                    }
+                });
+            });
+        }
+
+        // Adiciona um novo seletor de carta
         document.getElementById('btn-add-carta').addEventListener('click', function() {
-            const container = document.getElementById('cartas-container');
             const novoSeletorWrapper = document.createElement('div');
             novoSeletorWrapper.classList.add('seletor-carta');
             
             const novoSeletor = document.createElement('select');
             novoSeletor.name = 'cartas[]';
+            novoSeletor.classList.add('seletor-de-carta');
+            novoSeletor.required = true;
             
             const placeholder = document.createElement('option');
             placeholder.value = "";
@@ -65,7 +100,6 @@
             placeholder.textContent = 'Selecione outra carta...';
             novoSeletor.appendChild(placeholder);
 
-            const todasAsCartas = {{ todas_as_cartas|tojson }};
             todasAsCartas.forEach(function(carta) {
                 const option = document.createElement('option');
                 option.value = carta;
@@ -79,12 +113,22 @@
             removeBtn.classList.add('btn-remove');
             removeBtn.title = 'Remover esta carta';
             removeBtn.onclick = function() {
-                container.removeChild(novoSeletorWrapper);
+                cartasContainer.removeChild(novoSeletorWrapper);
+                updateAvailableCards(); // Atualiza as opções quando um seletor é removido
             };
 
             novoSeletorWrapper.appendChild(novoSeletor);
             novoSeletorWrapper.appendChild(removeBtn);
-            container.appendChild(novoSeletorWrapper);
+            cartasContainer.appendChild(novoSeletorWrapper);
+            
+            updateAvailableCards(); // Atualiza as opções após adicionar um novo seletor
+        });
+
+        // Usa 'event delegation' para ouvir mudanças em qualquer seletor de carta
+        cartasContainer.addEventListener('change', function(event) {
+            if (event.target && event.target.matches('.seletor-de-carta')) {
+                updateAvailableCards();
+            }
         });
     </script>
 </body>

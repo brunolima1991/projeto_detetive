@@ -14,6 +14,7 @@
       <div class="coluna-principal">
         <form id="game-form">
           {% for categoria in ['suspeitos', 'armas', 'locais'] %}
+          <!-- Adicionada a classe 'collapsed' para começar fechado -->
           <div class="categoria-section collapsed">
             <div class="categoria-header">
               <h2>{{ categoria.capitalize() }}</h2>
@@ -64,6 +65,9 @@
   </div>
 
   <!-- Modal aqui (sem alterações) -->
+  <div id="finalizarModal" style="display:none;">
+      <!-- Conteúdo do modal -->
+  </div>
 
   <script>
     // Script do formulário principal (sem alterações)
@@ -71,7 +75,8 @@
       e.preventDefault();
       const payload = { suspeitos: {}, armas: {}, locais: {} };
       document.querySelectorAll('.categoria-section').forEach(section => {
-        const categoria = section.querySelector('h2').textContent.toLowerCase();
+        // CORREÇÃO: Usar o h2 para obter o nome da categoria
+        const categoria = section.querySelector('h2').textContent.toLowerCase().trim();
         section.querySelectorAll('.item-control').forEach(itemControl => {
           const item = itemControl.dataset.item;
           const isRevealed = itemControl.querySelector('.revelado-check').checked;
@@ -90,16 +95,16 @@
       });
     });
 
-    // Script do modal (sem alterações)
-    // ...
-
-    // SCRIPT PARA PAINÉIS EXPANSÍVEIS
+    // SCRIPT PARA PAINÉIS EXPANSÍVEIS (CORRIGIDO)
     document.querySelectorAll('.categoria-header').forEach(header => {
       header.addEventListener('click', () => {
         const section = header.closest('.categoria-section');
         section.classList.toggle('collapsed');
       });
     });
+
+    // Script do modal (sem alterações)
+    // ...
   </script>
 </body>
 </html>

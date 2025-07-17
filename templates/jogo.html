@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detetive - Painel de Anotações</title>
-  <!-- Adicionado '?v=1.0' para forçar o carregamento do CSS novo -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.4">
 </head>
 <body>
   <div class="container">
@@ -24,8 +23,9 @@
               {% set lista_itens = suspeitos if categoria == 'suspeitos' else armas if categoria == 'armas' else locais %}
               {% for item in lista_itens %}
               <div class="item-control {% if item in revelados[categoria] %}revelado{% endif %}" data-item="{{ item }}">
-                <input class="revelado-check" type="checkbox" {% if item in revelados[categoria] %}checked{% endif %} title="Marcar como já revelado">
+                <input class="revelado-check" type="checkbox" {% if item in revelados[categoria] %}checked{% endif %} title="Marcar como carta revelada">
                 <label>{{ item }}</label>
+                <span class="status-revelado">Carta Revelada</span>
                 <span>Palpites:</span>
                 <input class="palpites-input" type="number" value="{{ contadores[categoria].get(item, 0) }}" min="0">
               </div>
@@ -33,26 +33,16 @@
             </div>
           </div>
           {% endfor %}
-          <button type="submit" class="btn">Atualizar Painel</button>
+          <button type="submit" id="btn-atualizar" class="btn">Atualizar Painel</button>
         </form>
       </div>
 
       <div class="coluna-lateral">
         <div class="sugestao">
-          <h2>Hipótese Sugerida</h2>
-          <p><strong>Suspeito:</strong> {{ sugestao.suspeito or 'N/A' }}</p>
-          <p><strong>Arma:</strong> {{ sugestao.arma or 'N/A' }}</p>
-          <p><strong>Local:</strong> {{ sugestao.local or 'N/A' }}</p>
-        </div>
-
-        <div class="probabilidades-display">
-          <h2>Probabilidades</h2>
-          {% for categoria in ['suspeitos', 'armas', 'locais'] %}
-            <h3>{{ categoria.capitalize() }}</h3>
-            {% for nome, prob in resultados[categoria] %}
-                <div class="prob-item {% if nome in revelados[categoria] %}revelado{% endif %}">{{ nome }} — {{ prob }}%</div>
-            {% endfor %}
-          {% endfor %}
+          <h2>Sugestão de Acusação</h2>
+          <p><strong>Suspeito:</strong> <span id="sugestao-suspeito">{{ sugestao.suspeito }}</span></p>
+          <p><strong>Arma:</strong> <span id="sugestao-arma">{{ sugestao.arma }}</span></p>
+          <p><strong>Local:</strong> <span id="sugestao-local">{{ sugestao.local }}</span></p>
         </div>
 
         <div class="acoes">
@@ -64,14 +54,18 @@
     </div>
   </div>
 
-  <!-- Modal aqui (sem alterações) -->
   <div id="finalizarModal" style="display:none;">
-      <!-- Conteúdo do modal -->
+      <!-- Conteúdo do modal será adicionado aqui se necessário -->
   </div>
 
   <script>
     document.getElementById('game-form').addEventListener('submit', function(e) {
       e.preventDefault();
+      const btn = e.target.querySelector('#btn-atualizar');
+      const originalBtnText = btn.textContent;
+      btn.textContent = 'A atualizar...';
+      btn.disabled = true;
+
       const payload = { suspeitos: {}, armas: {}, locais: {} };
       document.querySelectorAll('.categoria-section').forEach(section => {
         const categoria = section.querySelector('h2').textContent.toLowerCase().trim();
@@ -84,20 +78,50 @@
           }
         });
       });
+      
       fetch('/atualizar_estado', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      }).then(response => {
-        if (response.ok) location.reload();
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('sugestao-suspeito').textContent = data.sugestao.suspeito || 'N/A';
+          document.getElementById('sugestao-arma').textContent = data.sugestao.arma || 'N/A';
+          document.getElementById('sugestao-local').textContent = data.sugestao.local || 'N/A';
+
+          btn.textContent = 'Painel Atualizado!';
+          setTimeout(() => {
+              btn.textContent = originalBtnText;
+              btn.disabled = false;
+          }, 2000);
+        }
+      }).catch(error => {
+          console.error('Erro ao atualizar o painel:', error);
+          btn.textContent = 'Erro! Tente novamente.';
+          setTimeout(() => {
+              btn.textContent = originalBtnText;
+              btn.disabled = false;
+          }, 3000);
       });
     });
 
     document.querySelectorAll('.categoria-header').forEach(header => {
       header.addEventListener('click', () => {
-        const section = header.closest('.categoria-section');
-        section.classList.toggle('collapsed');
+        header.closest('.categoria-section').classList.toggle('collapsed');
       });
+    });
+    
+    document.querySelectorAll('.revelado-check').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const itemControl = this.closest('.item-control');
+            if (this.checked) {
+                itemControl.classList.add('revelado');
+            } else {
+                itemControl.classList.remove('revelado');
+            }
+        });
     });
   </script>
 </body>

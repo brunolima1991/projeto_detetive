@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detetive - Painel de Anotações</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.5">
+  <!-- Adicionado '?v=1.6' para forçar o carregamento do CSS novo -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.6">
 </head>
 <body>
   <div class="container">
@@ -27,7 +28,6 @@
                 <label>{{ item }}</label>
                 <span class="status-revelado">Carta Revelada</span>
                 
-                <!-- PONTO 1: Novo controle de palpites -->
                 <div class="palpite-controle">
                     <button type="button" class="btn-palpite-add" {% if item in revelados[categoria] %}disabled{% endif %}>+</button>
                     <span class="palpite-count">{{ contadores[categoria].get(item, 0) }}</span>
@@ -58,7 +58,6 @@
     </div>
   </div>
 
-  <!-- PONTO 3: Modal para Finalizar Jogo -->
   <div id="finalizarModal" class="modal" style="display:none;">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -105,7 +104,7 @@
         section.querySelectorAll('.item-control').forEach(itemControl => {
           const item = itemControl.dataset.item;
           const isRevealed = itemControl.querySelector('.revelado-check').checked;
-          const guessCount = parseInt(itemControl.querySelector('.palpite-count').textContent, 10) || 0; // PONTO 1: Lê do span
+          const guessCount = parseInt(itemControl.querySelector('.palpite-count').textContent, 10) || 0;
           if (payload[categoria]) {
             payload[categoria][item] = { 'revelado': isRevealed, 'palpites': guessCount };
           }
@@ -144,15 +143,15 @@
             const palpiteBtn = itemControl.querySelector('.btn-palpite-add');
             if (this.checked) {
                 itemControl.classList.add('revelado');
-                palpiteBtn.disabled = true; // PONTO 2: Desativa o botão de palpite
+                palpiteBtn.disabled = true;
             } else {
                 itemControl.classList.remove('revelado');
-                palpiteBtn.disabled = false; // PONTO 2: Ativa o botão de palpite
+                palpiteBtn.disabled = false;
             }
         });
     });
 
-    // --- PONTO 1: LÓGICA PARA INCREMENTAR PALPITES ---
+    // --- LÓGICA PARA INCREMENTAR PALPITES ---
     document.querySelectorAll('.btn-palpite-add').forEach(button => {
         button.addEventListener('click', function() {
             const countSpan = this.nextElementSibling;
@@ -161,7 +160,7 @@
         });
     });
 
-    // --- PONTO 3: LÓGICA DO MODAL DE FINALIZAÇÃO ---
+    // --- LÓGICA DO MODAL DE FINALIZAÇÃO ---
     const modal = document.getElementById('finalizarModal');
     const btnAbrirModal = document.getElementById('btn-abrir-modal-finalizar');
     const spanClose = modal.querySelector('.close-btn');

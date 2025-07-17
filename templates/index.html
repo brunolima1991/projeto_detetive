@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projeto Detetive - Início</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.5">
+  <!-- Adicionado '?v=1.6' para forçar o carregamento do CSS novo -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.6">
 </head>
 <body class="page-index">
 
@@ -14,6 +15,7 @@
         <button type="button" id="btn-mostrar-form" class="btn btn-grande">Iniciar Investigação</button>
     </div>
 
+    <!-- Formulário de configuração, inicialmente oculto -->
     <div id="form-setup" style="display:none;">
         <h2>Configuração da Partida</h2>
         <form action="{{ url_for('iniciar_nova_partida') }}" method="POST">

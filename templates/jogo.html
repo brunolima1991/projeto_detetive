@@ -4,17 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detetive - Painel de Anotações</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Adicionado '?v=1.0' para forçar o carregamento do CSS novo -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0">
 </head>
 <body>
   <div class="container">
-    <h1>Painel do Detetive</h1>
+    <h1>Painel do Detetive {{ nome_jogador }}</h1>
 
     <div class="container-principal">
       <div class="coluna-principal">
         <form id="game-form">
           {% for categoria in ['suspeitos', 'armas', 'locais'] %}
-          <!-- Adicionada a classe 'collapsed' para começar fechado -->
           <div class="categoria-section collapsed">
             <div class="categoria-header">
               <h2>{{ categoria.capitalize() }}</h2>
@@ -56,7 +56,7 @@
         </div>
 
         <div class="acoes">
-          <a href="{{ url_for('resetar') }}">Resetar Jogo</a>
+          <a href="{{ url_for('resetar') }}">Novo Jogo</a>
           <a href="#" id="finalizarBtn">Finalizar</a>
           <a href="{{ url_for('historico') }}">Histórico</a>
         </div>
@@ -70,12 +70,10 @@
   </div>
 
   <script>
-    // Script do formulário principal (sem alterações)
     document.getElementById('game-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const payload = { suspeitos: {}, armas: {}, locais: {} };
       document.querySelectorAll('.categoria-section').forEach(section => {
-        // CORREÇÃO: Usar o h2 para obter o nome da categoria
         const categoria = section.querySelector('h2').textContent.toLowerCase().trim();
         section.querySelectorAll('.item-control').forEach(itemControl => {
           const item = itemControl.dataset.item;
@@ -95,16 +93,12 @@
       });
     });
 
-    // SCRIPT PARA PAINÉIS EXPANSÍVEIS (CORRIGIDO)
     document.querySelectorAll('.categoria-header').forEach(header => {
       header.addEventListener('click', () => {
         const section = header.closest('.categoria-section');
         section.classList.toggle('collapsed');
       });
     });
-
-    // Script do modal (sem alterações)
-    // ...
   </script>
 </body>
 </html>

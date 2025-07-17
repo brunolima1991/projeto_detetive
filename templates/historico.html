@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Histórico de Partidas - Detetive</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.5">
+  <!-- Adicionado '?v=1.6' para forçar o carregamento do CSS novo -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.6">
 </head>
 <body>
 <div class="container">
@@ -19,7 +20,7 @@
     <thead>
         <tr>
           <th>Data/Hora</th>
-          <th>Jogador</th> <!-- PONTO 3: Nova coluna -->
+          <th>Jogador</th>
           <th>Suspeito</th>
           <th>Arma</th>
           <th>Local</th>
@@ -29,7 +30,7 @@
         {% for partida in historico %}
         <tr>
           <td>{{ partida.data }}</td>
-          <td>{{ partida.nome_jogador }}</td> <!-- PONTO 3: Mostra o nome -->
+          <td>{{ partida.nome_jogador }}</td>
           <td>{{ partida.suspeito }}</td>
           <td>{{ partida.arma }}</td>
           <td>{{ partida.local }}</td>

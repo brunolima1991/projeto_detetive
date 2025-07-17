@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projeto Detetive - Início</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Adicionado '?v=1.0' para forçar o carregamento do CSS novo -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0">
 </head>
 <body class="page-index">
 
@@ -54,11 +55,9 @@
             const novoSeletorWrapper = document.createElement('div');
             novoSeletorWrapper.classList.add('seletor-carta');
             
-            // Cria um novo <select>
             const novoSeletor = document.createElement('select');
             novoSeletor.name = 'cartas[]';
             
-            // Adiciona a opção placeholder
             const placeholder = document.createElement('option');
             placeholder.value = "";
             placeholder.disabled = true;
@@ -66,7 +65,6 @@
             placeholder.textContent = 'Selecione outra carta...';
             novoSeletor.appendChild(placeholder);
 
-            // Adiciona todas as cartas como opções
             const todasAsCartas = {{ todas_as_cartas|tojson }};
             todasAsCartas.forEach(function(carta) {
                 const option = document.createElement('option');
@@ -75,7 +73,6 @@
                 novoSeletor.appendChild(option);
             });
 
-            // Cria o botão de remover
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.textContent = 'X';

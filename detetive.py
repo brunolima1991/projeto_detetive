@@ -21,24 +21,16 @@ def iniciar_estado_jogo():
     session.modified = True
 
 def calcular_sugestao(contadores, revelados):
-    """
-    Calcula a sugestão de acusação.
-    A sugestão é a combinação das cartas NÃO REVELADAS com o MAIOR número de palpites.
-    """
+    """Calcula a sugestão de acusação com base na carta não revelada com mais palpites."""
     def mais_provavel_disponivel(cat):
         lista_base = SUSPEITOS if cat == 'suspeitos' else ARMAS if cat == 'armas' else LOCAIS
         revelados_cat = revelados.get(cat, [])
         contadores_cat = contadores.get(cat, {})
-        
         candidatos = [
             (item, contadores_cat.get(item, 0)) for item in lista_base 
             if item not in revelados_cat
         ]
-        
-        if not candidatos:
-            return None
-            
-        # Lógica corrigida: usa max() para encontrar a carta com mais palpites.
+        if not candidatos: return None
         return max(candidatos, key=lambda x: x[1])[0]
 
     return {
@@ -77,7 +69,6 @@ def jogo():
     contadores = session.get('contadores', {})
     revelados = session.get('revelados', {})
     nome_jogador = session.get('nome_jogador', 'Detetive')
-    
     sugestao_inicial = {'suspeito': '...', 'arma': '...', 'local': '...'}
 
     return render_template(
@@ -93,7 +84,6 @@ def jogo():
 def atualizar_estado():
     """Recebe o estado do tabuleiro, atualiza a sessão e retorna a nova sugestão."""
     data = request.get_json()
-    
     new_contadores = session.get('contadores', {'suspeitos': {}, 'armas': {}, 'locais': {}})
     new_revelados = session.get('revelados', {'suspeitos': [], 'armas': [], 'locais': []})
 
@@ -110,9 +100,7 @@ def atualizar_estado():
     session['contadores'] = new_contadores
     session['revelados'] = new_revelados
     session.modified = True
-
     nova_sugestao = calcular_sugestao(new_contadores, new_revelados)
-    
     return jsonify({'success': True, 'sugestao': nova_sugestao})
 
 @app.route('/resetar')
@@ -126,6 +114,7 @@ def finalizar():
     """Salva o resultado final da partida no histórico."""
     data = request.get_json()
     partida = {
+        'nome_jogador': session.get('nome_jogador', 'Anónimo'), # PONTO 3: Adiciona o nome do jogador
         'suspeito': data.get('suspeito'),
         'arma': data.get('arma'),
         'local': data.get('local'),
@@ -133,7 +122,7 @@ def finalizar():
     }
     historico = session.get('historico', [])
     historico.insert(0, partida)
-    session['historico'] = historico[:10]
+    session['historico'] = historico[:10] # Garante que apenas os 10 últimos são guardados
     iniciar_estado_jogo()
     return jsonify({'success': True})
 

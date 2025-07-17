@@ -8,13 +8,88 @@
 </head>
 <body class="page-index">
 
-  <h1>Projeto Detetive</h1>
-  <p>A sua ferramenta para desvendar os maiores mistérios.</p>
-  
-  <form action="{{ url_for('jogo') }}" method="get">
-    <button type="submit" class="btn btn-primario btn-grande">Iniciar Investigação</button>
-  </form>
+    <div id="tela-inicial">
+        <h1>Projeto Detetive</h1>
+        <p>A sua ferramenta para desvendar os maiores mistérios.</p>
+        <button type="button" id="btn-mostrar-form" class="btn btn-grande">Iniciar Investigação</button>
+    </div>
 
+    <!-- Formulário de configuração, inicialmente oculto -->
+    <div id="form-setup" style="display:none;">
+        <h2>Configuração da Partida</h2>
+        <form action="{{ url_for('iniciar_nova_partida') }}" method="POST">
+            <div class="form-group">
+                <label for="nome_jogador">Seu Nome:</label>
+                <input type="text" id="nome_jogador" name="nome_jogador" placeholder="Ex: Detetive Bruno" required>
+            </div>
+
+            <div class="form-group">
+                <label>Suas Cartas (as que você tem na mão):</label>
+                <div id="cartas-container">
+                    <!-- O primeiro seletor de carta -->
+                    <div class="seletor-carta">
+                        <select name="cartas[]" required>
+                            <option value="" disabled selected>Selecione uma carta...</option>
+                            {% for carta in todas_as_cartas %}
+                            <option value="{{ carta }}">{{ carta }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="button" id="btn-add-carta" class="btn-add" title="Adicionar outra carta">+</button>
+            </div>
+            
+            <button type="submit" class="btn btn-grande">Começar a Investigar</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('btn-mostrar-form').addEventListener('click', function() {
+            document.getElementById('tela-inicial').style.display = 'none';
+            document.getElementById('form-setup').style.display = 'block';
+        });
+
+        document.getElementById('btn-add-carta').addEventListener('click', function() {
+            const container = document.getElementById('cartas-container');
+            const novoSeletorWrapper = document.createElement('div');
+            novoSeletorWrapper.classList.add('seletor-carta');
+            
+            // Cria um novo <select>
+            const novoSeletor = document.createElement('select');
+            novoSeletor.name = 'cartas[]';
+            
+            // Adiciona a opção placeholder
+            const placeholder = document.createElement('option');
+            placeholder.value = "";
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            placeholder.textContent = 'Selecione outra carta...';
+            novoSeletor.appendChild(placeholder);
+
+            // Adiciona todas as cartas como opções
+            const todasAsCartas = {{ todas_as_cartas|tojson }};
+            todasAsCartas.forEach(function(carta) {
+                const option = document.createElement('option');
+                option.value = carta;
+                option.textContent = carta;
+                novoSeletor.appendChild(option);
+            });
+
+            // Cria o botão de remover
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.textContent = 'X';
+            removeBtn.classList.add('btn-remove');
+            removeBtn.title = 'Remover esta carta';
+            removeBtn.onclick = function() {
+                container.removeChild(novoSeletorWrapper);
+            };
+
+            novoSeletorWrapper.appendChild(novoSeletor);
+            novoSeletorWrapper.appendChild(removeBtn);
+            container.appendChild(novoSeletorWrapper);
+        });
+    </script>
 </body>
 </html>
 

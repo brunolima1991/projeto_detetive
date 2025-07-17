@@ -1,370 +1,118 @@
-/* --- GERAL & FONTES --- */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Teko:wght@700&display=swap');
-
-:root {
-  --cor-fundo: #121212;
-  --cor-fundo-card: #1f1f1f;
-  --cor-borda: #444;
-  --cor-primaria: #e94560;
-  --cor-secundaria: #f7d794;
-  --cor-texto: #eee;
-  --cor-sucesso: #16a085;
-}
-
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color: var(--cor-fundo);
-  color: var(--cor-texto);
-  margin: 0;
-  padding: 20px;
-}
-
-h1 {
-  font-family: 'Teko', sans-serif;
-  color: var(--cor-primaria);
-  text-align: center;
-  font-size: 3rem;
-}
-
-h2 {
-  font-family: 'Teko', sans-serif;
-  color: var(--cor-secundaria);
-  font-size: 2rem;
-  margin: 0;
-}
-
-/* --- ESTILOS PÁGINA INICIAL (index.html) --- */
-.page-index {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 0;
-    background-color: #1a1a2e;
-}
-
-.page-index h1 {
-    font-size: 5rem;
-}
-
-.page-index p {
-    font-size: 1.2rem;
-    color: #d8dee9;
-    margin-bottom: 2.5rem;
-}
-
-.page-index .btn-grande {
-    padding: 1rem 2.5rem;
-    font-size: 1.2rem;
-    background-color: #16213e;
-    color: var(--cor-primaria);
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(233, 69, 96, 0.5);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    cursor: pointer;
-}
-
-.page-index .btn-grande:hover {
-    background-color: var(--cor-primaria);
-    color: white;
-    transform: scale(1.05);
-}
-
-/* --- ESTILOS FORMULÁRIO DE SETUP (index.html) --- */
-#form-setup {
-    background-color: #1a1a2e;
-    padding: 2rem 3rem;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 600px;
-    text-align: left;
-    border: 1px solid var(--cor-borda);
-    box-sizing: border-box;
-}
-
-#form-setup h2 {
-    text-align: center;
-    color: var(--cor-primaria);
-    margin-top: 0;
-    margin-bottom: 2rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-    color: #d8dee9;
-}
-
-.form-group input[type="text"],
-.form-group select {
-    width: 100%;
-    padding: 0.8rem;
-    background-color: #121212;
-    border: 1px solid #444;
-    border-radius: 8px;
-    color: var(--cor-texto);
-    font-size: 1rem;
-    box-sizing: border-box;
-}
-
-#cartas-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.seletor-carta {
+/* --- PONTO 1: ESTILOS PARA O NOVO CONTROLE DE PALPITES --- */
+.palpite-controle {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    justify-self: end; /* Alinha o controle à direita do grid */
 }
 
-.seletor-carta select {
-    flex-grow: 1;
-}
-
-.btn-add, .btn-remove {
-    border: none;
+.btn-palpite-add {
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    cursor: pointer;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s, transform 0.2s;
-}
-
-.btn-add {
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-    margin-top: 0.5rem;
-    background-color: #444;
-    color: var(--cor-texto);
-}
-
-.btn-remove {
-    width: 30px;
-    height: 30px;
-    font-size: 1rem;
-    background-color: #e94560;
+    border: none;
+    background-color: var(--cor-sucesso);
     color: white;
-    flex-shrink: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
-.btn-add:hover, .btn-remove:hover {
-    filter: brightness(1.2);
-    transform: scale(1.05);
+.btn-palpite-add:hover {
+    background-color: #1abc9c;
 }
 
-#form-setup .btn-grande {
-    width: 100%;
-    margin-top: 1rem;
+.btn-palpite-add:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
-/* --- LAYOUT PRINCIPAL (jogo.html) --- */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
+.palpite-count {
+    font-size: 1.1rem;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
 }
 
-.coluna-principal, .coluna-lateral {
-    margin-bottom: 2rem;
-}
-
-@media (min-width: 992px) {
-  .container-principal {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-  }
-}
-
-/* --- PAINEL EXPANSÍVEL (ACCORDION) --- */
-.categoria-section {
-  margin-top: 30px;
-  border-bottom: 1px solid var(--cor-borda);
-  padding-bottom: 1rem;
-}
-
-.categoria-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.toggle-icon {
-  font-size: 1.5rem;
-  color: var(--cor-secundaria);
-  transition: transform 0.3s ease-in-out;
-}
-
-.categoria-content {
-  max-height: 1000px;
-  overflow: hidden;
-  transition: max-height 0.4s ease-in-out;
-  padding-top: 1rem;
-}
-
-.categoria-section.collapsed .categoria-content {
-  max-height: 0;
-  padding-top: 0;
-}
-
-.categoria-section.collapsed .toggle-icon {
-  transform: rotate(-90deg);
-}
-
-/* --- CONTROLES DOS ITENS --- */
+/* Ajuste no grid do item-control para remover o input antigo */
 .item-control {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto auto;
-  align-items: center;
-  gap: 0.5rem 0.8rem;
-  padding: 8px 5px;
-  border-radius: 5px;
-  margin-bottom: 3px;
+  grid-template-columns: auto 1fr auto auto; /* checkbox, label, status, controle de palpite */
 }
 
-.item-control:nth-child(even) {
-  background-color: var(--cor-fundo-card);
+/* --- PONTO 3: ESTILOS PARA O MODAL DE FINALIZAÇÃO --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
 }
 
-.revelado-check {
-  width: 18px;
-  height: 18px;
+.modal-content {
+    background-color: #1a1a2e;
+    margin: 15% auto;
+    padding: 2rem 3rem;
+    border: 1px solid var(--cor-borda);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 15px;
+    position: relative;
 }
 
-.palpites-input {
-  width: 50px;
-  padding: 5px;
-  background-color: #333;
-  color: #eee;
-  border: 1px solid #555;
-  border-radius: 4px;
-  text-align: center;
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
 }
 
-/* --- ESTILOS PARA STATUS DE CARTA REVELADA --- */
-.status-revelado {
-  color: var(--cor-primaria);
-  font-weight: bold;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  justify-self: center;
+.close-btn:hover,
+.close-btn:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
 }
 
-.item-control.revelado .status-revelado {
-  visibility: visible;
-  opacity: 1;
+/* Ajusta o estilo dos botões de ação */
+.acoes .btn-acao {
+    padding: 10px;
+    border: 1px solid var(--cor-primaria);
+    border-radius: 5px;
+    color: var(--cor-primaria);
+    text-decoration: none;
+    text-align: center;
+    flex: 1;
+    background-color: transparent;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.acoes .btn-acao:hover {
+    background-color: var(--cor-primaria);
+    color: black;
 }
 
-.item-control.revelado label {
-  text-decoration: line-through;
-  opacity: 0.7;
+.historico-acoes .btn-acao {
+    display: inline-block;
+    width: auto;
+    padding: 10px 20px;
+    border: 1px solid var(--cor-primaria);
+    border-radius: 5px;
+    color: var(--cor-primaria);
+    text-decoration: none;
 }
-
-/* --- BOTÕES E AÇÕES --- */
-.btn {
-  display: block;
-  width: 100%;
-  margin-top: 20px;
-  padding: 15px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  background-color: var(--cor-sucesso);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  text-decoration: none;
-  box-sizing: border-box;
-  text-align: center;
-}
-.btn:hover {
-  background-color: #1abc9c;
-}
-
-.acoes {
-  margin-top: 30px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-.acoes a {
-  padding: 10px;
-  border: 1px solid var(--cor-primaria);
-  border-radius: 5px;
-  color: var(--cor-primaria);
-  text-decoration: none;
-  text-align: center;
-  flex: 1;
-}
-.acoes a:hover {
-  background-color: var(--cor-primaria);
-  color: black;
-}
-
-/* --- SUGESTÃO E PROBABILIDADES --- */
-.sugestao {
-  margin-top: 40px;
-  padding: 20px;
-  border: 1px solid var(--cor-borda);
-  border-radius: 10px;
-  background-color: var(--cor-fundo-card);
-}
-.sugestao h2 {
-    margin-top: 0;
-}
-
-/* --- ESTILOS PARA MOBILE --- */
-@media (max-width: 480px) {
-  body { padding: 1rem; }
-  h1 { font-size: 2.5rem; }
-  h2 { font-size: 1.8rem; }
-  .item-control {
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto auto;
-    column-gap: 1rem;
-    row-gap: 0.5rem;
-    padding: 1rem 0.5rem;
-  }
-  .item-control .revelado-check {
-    grid-row: 1 / span 2;
-    align-self: center;
-  }
-  .item-control label {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .item-control .status-revelado {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: end;
-    font-size: 0.7rem;
-  }
-  .item-control span:not(.status-revelado) {
-    grid-column: 2;
-    grid-row: 2;
-    justify-self: start;
-  }
-  .item-control .palpites-input {
-    grid-column: 2;
-    grid-row: 2;
-    justify-self: end;
-  }
-  .acoes { flex-direction: column; }
+.historico-acoes .btn-acao:hover {
+    background-color: var(--cor-primaria);
+    color: black;
 }
 

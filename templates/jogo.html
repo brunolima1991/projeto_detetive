@@ -14,17 +14,28 @@
       <div class="coluna-principal">
         <form id="game-form">
           {% for categoria in ['suspeitos', 'armas', 'locais'] %}
-          <div class="categoria-card">
-            <h2>{{ categoria.capitalize() }}</h2>
-            {% set lista_itens = suspeitos if categoria == 'suspeitos' else armas if categoria == 'armas' else locais %}
-            {% for item in lista_itens %}
-            <div class="item-control {% if item in revelados[categoria] %}revelado{% endif %}" data-item="{{ item }}">
-              <input class="revelado-check" type="checkbox" {% if item in revelados[categoria] %}checked{% endif %} title="Marcar como já revelado">
-              <label>{{ item }}</label>
-              <span>Palpites:</span>
-              <input class="palpites-input" type="number" value="{{ contadores[categoria].get(item, 0) }}" min="0">
+          <!-- Adicionada a classe 'collapsed' para começar fechado -->
+          <div class="categoria-card collapsed"> 
+            <div class="card-header">
+              <h2>{{ categoria.capitalize() }}</h2>
+              <button type="button" class="toggle-btn" aria-expanded="false">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                </svg>
+              </button>
             </div>
-            {% endfor %}
+
+            <div class="card-content">
+              {% set lista_itens = suspeitos if categoria == 'suspeitos' else armas if categoria == 'armas' else locais %}
+              {% for item in lista_itens %}
+              <div class="item-control {% if item in revelados[categoria] %}revelado{% endif %}" data-item="{{ item }}">
+                <input class="revelado-check" type="checkbox" {% if item in revelados[categoria] %}checked{% endif %} title="Marcar como já revelado">
+                <label>{{ item }}</label>
+                <span>Palpites:</span>
+                <input class="palpites-input" type="number" value="{{ contadores[categoria].get(item, 0) }}" min="0">
+              </div>
+              {% endfor %}
+            </div>
           </div>
           {% endfor %}
           <button type="submit" id="btn-atualizar" class="btn">Atualizar Painel</button>
@@ -59,7 +70,7 @@
     </div>
   </div>
 
-  <!-- Modal Finalizar Partida -->
+  <!-- Modal Finalizar Partida (sem alterações) -->
   <div id="finalizarModal">
     <div>
       <h2>Finalizar Partida</h2>
@@ -92,6 +103,7 @@
   </div>
 
   <script>
+    // Script para o formulário principal (sem alterações)
     document.getElementById('game-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const payload = { suspeitos: {}, armas: {}, locais: {} };
@@ -102,7 +114,6 @@
           const isRevealed = itemControl.querySelector('.revelado-check').checked;
           const guessCount = parseInt(itemControl.querySelector('.palpites-input').value, 10) || 0;
           
-          // O nome da categoria já está no plural no HTML (suspeitos, armas, locais)
           if (payload[categoria]) {
               payload[categoria][item] = { 'revelado': isRevealed, 'palpites': guessCount };
           }
@@ -117,6 +128,7 @@
       });
     });
 
+    // Script do modal (sem alterações)
     document.getElementById('finalizarBtn').onclick = (e) => {
       e.preventDefault();
       document.getElementById('finalizarModal').style.display = 'flex';
@@ -137,6 +149,18 @@
         body: JSON.stringify(data)
       }).then(() => { window.location.href = '/historico'; });
     };
+
+    // NOVO SCRIPT PARA OS PAINÉIS EXPANSÍVEIS
+    document.querySelectorAll('.card-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const card = header.closest('.categoria-card');
+        const button = header.querySelector('.toggle-btn');
+        const isCollapsed = card.classList.contains('collapsed');
+
+        card.classList.toggle('collapsed');
+        button.setAttribute('aria-expanded', !isCollapsed);
+      });
+    });
   </script>
 </body>
 </html>

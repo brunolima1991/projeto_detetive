@@ -1,126 +1,306 @@
-/* Estilos Gerais */
+/* --- GERAL & FONTES --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Teko:wght@700&display=swap');
+
+:root {
+  --cor-fundo: #1a1d24;
+  --cor-fundo-card: #242831;
+  --cor-borda: #3b4252;
+  --cor-primaria: #88c0d0;
+  --cor-secundaria: #ebcb8b;
+  --cor-texto: #e5e9f0;
+  --cor-texto-escuro: #d8dee9;
+  --cor-revelado: #bf616a;
+  --cor-sucesso: #a3be8c;
+  --sombra-card: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
 body {
-  font-family: Arial, sans-serif;
-  color: #eee;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
   margin: 0;
-  background-color: #121212;
+  padding: 2rem;
+  line-height: 1.6;
+}
+
+h1, h2 {
+  font-family: 'Teko', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 h1 {
-  color: #e94560;
+  color: var(--cor-primaria);
+  text-align: center;
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(136, 192, 208, 0.5);
+}
+
+h2 {
+  color: var(--cor-secundaria);
+  font-size: 2rem;
+  border-bottom: 2px solid var(--cor-borda);
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* --- ESTILOS PÁGINA INICIAL (index.html) --- */
+.page-index {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0;
+}
+
+.page-index h1 {
+    font-size: 5rem;
+}
+
+.page-index p {
+    font-size: 1.2rem;
+    color: var(--cor-texto-escuro);
+    margin-bottom: 2.5rem;
+}
+
+/* --- LAYOUT PRINCIPAL (jogo.html) --- */
+.container-principal {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 992px) {
+    .container-principal {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.coluna-principal, .coluna-lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* --- CARD DE CATEGORIA --- */
+.categoria-card {
+  background-color: var(--cor-fundo-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--sombra-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.categoria-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* --- CONTROLES DE ITENS (CHECKBOX, INPUT) --- */
+.item-control {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.item-control:last-child {
+    border-bottom: none;
+}
+
+.item-control label {
+  font-size: 1.1rem;
+}
+
+.item-control.revelado {
+  background-color: rgba(191, 97, 106, 0.1);
+  opacity: 0.6;
+}
+
+.item-control.revelado label {
+  text-decoration: line-through;
+  color: var(--cor-revelado);
+}
+
+/* Estilo customizado para Checkbox */
+.revelado-check {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--cor-borda);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.revelado-check:checked {
+  background-color: var(--cor-revelado);
+  border-color: var(--cor-revelado);
+}
+.revelado-check:checked::after {
+  content: 'X';
+  font-weight: bold;
+  color: var(--cor-fundo-card);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+}
+
+/* Estilo para Input de Número */
+.palpites-input {
+  width: 60px;
+  padding: 0.5rem;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  border: 1px solid var(--cor-borda);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.palpites-input:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 5px rgba(136, 192, 208, 0.5);
+}
+
+/* --- BOTÕES --- */
+.btn {
+  font-family: 'Roboto', sans-serif;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
   text-align: center;
 }
 
-/* --- Página Inicial (index.html) --- */
-body.page-index {
-  height: 100%;
-  background-color: #1a1a2e;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.btn-grande {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
 }
 
-button#iniciar {
-  padding: 20px 60px;
-  font-size: 2rem;
-  background-color: #16213e;
-  border: none;
-  border-radius: 10px;
-  color: #e94560;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(233, 69, 96, 0.5);
-  transition: background-color 0.3s ease, transform 0.2s ease;
+.btn-primario {
+    background-color: var(--cor-primaria);
+    color: var(--cor-fundo);
+}
+.btn-primario:hover {
+    background-color: #a0d9e8;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(136, 192, 208, 0.3);
 }
 
-button#iniciar:hover {
-  background-color: #e94560;
-  color: white;
-  transform: scale(1.05);
+#btn-atualizar {
+  background-color: var(--cor-sucesso);
+  color: var(--cor-fundo);
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem;
 }
-
-button#iniciar:active {
-  transform: scale(0.95);
-}
-
-/* --- Página do Jogo (jogo.html) --- */
-body.page-jogo {
-  padding: 20px;
-}
-
-.categoria {
-  margin-top: 30px;
-}
-
-.categoria h2 {
-  color: #f7d794;
-}
-
-.botoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-button.palpite {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: #2c2c54;
-  color: white;
-  cursor: pointer;
-}
-
-button.palpite:hover {
-  background-color: #575fcf;
-}
-
-button.palpite.saiu {
-  opacity: 0.5;
-  text-decoration: line-through;
-  cursor: default;
-  background-color: #555 !important;
-}
-
-.probabilidades {
-  margin-top: 10px;
-  font-size: 0.9rem;
+#btn-atualizar:hover {
+  background-color: #b4d09a;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(163, 190, 140, 0.3);
 }
 
 .acoes {
-  margin-top: 30px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.acoes .btn {
+    background-color: transparent;
+    border: 2px solid var(--cor-borda);
+    color: var(--cor-texto-escuro);
+}
+.acoes .btn:hover {
+    background-color: var(--cor-borda);
+    color: var(--cor-texto);
+}
+.acoes .btn-finalizar {
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria);
+}
+.acoes .btn-finalizar:hover {
+    background-color: var(--cor-primaria);
+    color: var(--cor-fundo);
 }
 
-.acoes a {
-  padding: 10px;
-  border: 1px solid #e94560;
-  border-radius: 5px;
-  color: #e94560;
-  text-decoration: none;
-  text-align: center;
+
+/* --- CARD DE SUGESTÃO E PROBABILIDADES --- */
+.sugestao, .probabilidades-display {
+  background-color: var(--cor-fundo-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--sombra-card);
 }
 
-.acoes a:hover {
-  background-color: #e94560;
-  color: black;
+.sugestao p, .probabilidades-display .prob-item {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+.sugestao strong {
+  color: var(--cor-secundaria);
+}
+.probabilidades-display .revelado {
+    opacity: 0.5;
+    text-decoration: line-through;
 }
 
-.sugestao {
-  margin-top: 40px;
-  padding: 20px;
-  border: 2px dashed #e94560;
-  border-radius: 10px;
-  background-color: #1f1f1f;
+/* --- ESTILOS PÁGINA HISTÓRICO --- */
+.tabela-historico {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--cor-fundo-card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--sombra-card);
+}
+.tabela-historico th, .tabela-historico td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--cor-borda);
+}
+.tabela-historico th {
+    background-color: #3b4252;
+    color: var(--cor-texto);
+    font-family: 'Teko', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+.tabela-historico tr:last-child td {
+    border-bottom: none;
+}
+.tabela-historico td {
+    color: var(--cor-texto-escuro);
+}
+.historico-acoes {
+    margin-bottom: 2rem;
 }
 
-.sugestao h2 {
-  margin-top: 0;
-  color: #e94560;
-}
-
-/* Modal de Finalização */
+/* --- MODAL --- */
 #finalizarModal {
   display: none;
   position: fixed;
@@ -128,90 +308,43 @@ button.palpite.saiu {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(26, 29, 36, 0.7);
   align-items: center;
   justify-content: center;
   z-index: 999;
+  backdrop-filter: blur(5px);
 }
-
 #finalizarModal > div {
-  background: #222;
-  padding: 30px;
-  border-radius: 10px;
-  max-width: 350px;
-  margin: auto;
+  background: var(--cor-fundo-card);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--cor-borda);
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-
-#finalizarModal h2 {
-  color: #e94560;
-}
-
-#finalizarModal label {
-  color: #eee;
-  display: block;
-  margin-bottom: 10px;
-}
-
 #finalizarModal select {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #e94560;
-  border-radius: 5px;
-  background: #333;
-  color: #eee;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: 1rem;
+}
+#finalizarModal .modal-botoes {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+#finalizarModal .btn-confirmar {
+    background-color: var(--cor-revelado);
+    color: var(--cor-fundo);
+}
+#finalizarModal .btn-cancelar {
+    background-color: var(--cor-borda);
+    color: var(--cor-texto);
 }
 
-#finalizarModal button {
-  background: #e94560;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#finalizarModal button:hover {
-  background: #575fcf;
-}
-
-
-/* --- Página de Histórico (historico.html) --- */
-body.page-historico {
-    padding: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 30px;
-  background: #1f1f1f;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #333;
-  text-align: center;
-}
-
-th {
-  background-color: #e94560;
-  color: #fff;
-}
-
-tr:last-child td {
-  border-bottom: none;
-}
-
-.voltar-jogo {
-  display: inline-block;
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  background: #e94560;
-  color: #fff;
-  border-radius: 5px;
-  text-decoration: none;
-  text-align: center;
-}

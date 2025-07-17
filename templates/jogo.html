@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detetive - Painel de Anotações</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.4">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.5">
 </head>
 <body>
   <div class="container">
@@ -26,8 +26,12 @@
                 <input class="revelado-check" type="checkbox" {% if item in revelados[categoria] %}checked{% endif %} title="Marcar como carta revelada">
                 <label>{{ item }}</label>
                 <span class="status-revelado">Carta Revelada</span>
-                <span>Palpites:</span>
-                <input class="palpites-input" type="number" value="{{ contadores[categoria].get(item, 0) }}" min="0">
+                
+                <!-- PONTO 1: Novo controle de palpites -->
+                <div class="palpite-controle">
+                    <button type="button" class="btn-palpite-add" {% if item in revelados[categoria] %}disabled{% endif %}>+</button>
+                    <span class="palpite-count">{{ contadores[categoria].get(item, 0) }}</span>
+                </div>
               </div>
               {% endfor %}
             </div>
@@ -47,18 +51,47 @@
 
         <div class="acoes">
           <a href="{{ url_for('resetar') }}">Novo Jogo</a>
-          <a href="#" id="finalizarBtn">Finalizar</a>
-          <a href="{{ url_for('historico') }}">Histórico</a>
+          <button type="button" id="btn-abrir-modal-finalizar" class="btn-acao">Finalizar</button>
+          <a href="{{ url_for('historico') }}" class="btn-acao">Histórico</a>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="finalizarModal" style="display:none;">
-      <!-- Conteúdo do modal será adicionado aqui se necessário -->
+  <!-- PONTO 3: Modal para Finalizar Jogo -->
+  <div id="finalizarModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Registar Solução do Caso</h2>
+        <form id="finalizarForm">
+            <div class="form-group">
+                <label>Suspeito Culpado:</label>
+                <select name="suspeito" required>
+                    <option value="" disabled selected>Selecione o suspeito...</option>
+                    {% for s in suspeitos %}<option value="{{s}}">{{s}}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Arma do Crime:</label>
+                <select name="arma" required>
+                    <option value="" disabled selected>Selecione a arma...</option>
+                    {% for a in armas %}<option value="{{a}}">{{a}}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Local do Crime:</label>
+                <select name="local" required>
+                    <option value="" disabled selected>Selecione o local...</option>
+                    {% for l in locais %}<option value="{{l}}">{{l}}</option>{% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn">Confirmar e Salvar</button>
+        </form>
+    </div>
   </div>
 
   <script>
+    // --- LÓGICA DE ATUALIZAÇÃO DO PAINEL ---
     document.getElementById('game-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const btn = e.target.querySelector('#btn-atualizar');
@@ -72,7 +105,7 @@
         section.querySelectorAll('.item-control').forEach(itemControl => {
           const item = itemControl.dataset.item;
           const isRevealed = itemControl.querySelector('.revelado-check').checked;
-          const guessCount = parseInt(itemControl.querySelector('.palpites-input').value, 10) || 0;
+          const guessCount = parseInt(itemControl.querySelector('.palpite-count').textContent, 10) || 0; // PONTO 1: Lê do span
           if (payload[categoria]) {
             payload[categoria][item] = { 'revelado': isRevealed, 'palpites': guessCount };
           }
@@ -92,36 +125,72 @@
           document.getElementById('sugestao-local').textContent = data.sugestao.local || 'N/A';
 
           btn.textContent = 'Painel Atualizado!';
-          setTimeout(() => {
-              btn.textContent = originalBtnText;
-              btn.disabled = false;
-          }, 2000);
+          setTimeout(() => { btn.textContent = originalBtnText; btn.disabled = false; }, 2000);
         }
-      }).catch(error => {
-          console.error('Erro ao atualizar o painel:', error);
-          btn.textContent = 'Erro! Tente novamente.';
-          setTimeout(() => {
-              btn.textContent = originalBtnText;
-              btn.disabled = false;
-          }, 3000);
       });
     });
 
+    // --- LÓGICA DOS PAINÉIS EXPANSÍVEIS ---
     document.querySelectorAll('.categoria-header').forEach(header => {
       header.addEventListener('click', () => {
         header.closest('.categoria-section').classList.toggle('collapsed');
       });
     });
     
+    // --- LÓGICA PARA MARCAR/DESMARCAR CARTAS REVELADAS ---
     document.querySelectorAll('.revelado-check').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const itemControl = this.closest('.item-control');
+            const palpiteBtn = itemControl.querySelector('.btn-palpite-add');
             if (this.checked) {
                 itemControl.classList.add('revelado');
+                palpiteBtn.disabled = true; // PONTO 2: Desativa o botão de palpite
             } else {
                 itemControl.classList.remove('revelado');
+                palpiteBtn.disabled = false; // PONTO 2: Ativa o botão de palpite
             }
         });
+    });
+
+    // --- PONTO 1: LÓGICA PARA INCREMENTAR PALPITES ---
+    document.querySelectorAll('.btn-palpite-add').forEach(button => {
+        button.addEventListener('click', function() {
+            const countSpan = this.nextElementSibling;
+            let currentCount = parseInt(countSpan.textContent, 10);
+            countSpan.textContent = currentCount + 1;
+        });
+    });
+
+    // --- PONTO 3: LÓGICA DO MODAL DE FINALIZAÇÃO ---
+    const modal = document.getElementById('finalizarModal');
+    const btnAbrirModal = document.getElementById('btn-abrir-modal-finalizar');
+    const spanClose = modal.querySelector('.close-btn');
+
+    btnAbrirModal.onclick = () => { modal.style.display = 'block'; }
+    spanClose.onclick = () => { modal.style.display = 'none'; }
+    window.onclick = (event) => {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    document.getElementById('finalizarForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            suspeito: this.suspeito.value,
+            arma: this.arma.value,
+            local: this.local.value
+        };
+        fetch('/finalizar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(response => response.json())
+          .then(data => {
+              if(data.success) {
+                  window.location.href = '/historico';
+              }
+          });
     });
   </script>
 </body>

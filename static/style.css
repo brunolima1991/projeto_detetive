@@ -33,7 +33,46 @@ h2 {
   margin: 0;
 }
 
-/* --- LAYOUT PRINCIPAL --- */
+/* --- ESTILOS PÁGINA INICIAL (index.html) --- */
+.page-index {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0;
+    background-color: #1a1a2e;
+}
+
+.page-index h1 {
+    font-size: 5rem;
+}
+
+.page-index p {
+    font-size: 1.2rem;
+    color: #d8dee9;
+    margin-bottom: 2.5rem;
+}
+
+.page-index .btn-grande {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    background-color: #16213e;
+    color: var(--cor-primaria);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(233, 69, 96, 0.5);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.page-index .btn-grande:hover {
+    background-color: var(--cor-primaria);
+    color: white;
+    transform: scale(1.05);
+}
+
+
+/* --- LAYOUT PRINCIPAL (jogo.html) --- */
 .container {
   max-width: 1200px;
   margin: 0 auto;

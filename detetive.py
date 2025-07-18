@@ -39,6 +39,27 @@ def calcular_sugestao(contadores, revelados):
         'local': mais_provavel_disponivel('locais')
     }
 
+def calcular_probabilidades(contadores, revelados):
+    """Calcula a porcentagem de chance de cada item com base nos palpites."""
+    probabilidades = {}
+    for categoria in ['suspeitos', 'armas', 'locais']:
+        base = SUSPEITOS if categoria == 'suspeitos' else ARMAS if categoria == 'armas' else LOCAIS
+        revelados_categoria = revelados.get(categoria, [])
+        contadores_categoria = contadores.get(categoria, {})
+        
+        itens_restantes = [item for item in base if item not in revelados_categoria]
+        total_palpites_restantes = sum(contadores_categoria.get(item, 0) for item in itens_restantes) or 1
+        
+        lista_prob = []
+        for item in base:
+            if item in itens_restantes:
+                prob = round((contadores_categoria.get(item, 0) / total_palpites_restantes) * 100, 1)
+                lista_prob.append({'nome': item, 'prob': prob})
+            else:
+                lista_prob.append({'nome': item, 'prob': 0.0})
+        probabilidades[categoria] = lista_prob
+    return probabilidades
+
 @app.route('/')
 def index():
     """Renderiza a página inicial."""
@@ -69,7 +90,9 @@ def jogo():
     contadores = session.get('contadores', {})
     revelados = session.get('revelados', {})
     nome_jogador = session.get('nome_jogador', 'Detetive')
+    
     sugestao_inicial = {'suspeito': '...', 'arma': '...', 'local': '...'}
+    probabilidades = calcular_probabilidades(contadores, revelados)
 
     return render_template(
         'jogo.html',
@@ -77,13 +100,15 @@ def jogo():
         suspeitos=SUSPEITOS, armas=ARMAS, locais=LOCAIS,
         revelados=revelados,
         contadores=contadores,
-        sugestao=sugestao_inicial
+        sugestao=sugestao_inicial,
+        probabilidades=probabilidades
     )
 
 @app.route('/atualizar_estado', methods=['POST'])
 def atualizar_estado():
-    """Recebe o estado do tabuleiro, atualiza a sessão e retorna a nova sugestão."""
+    """Recebe o estado do tabuleiro, atualiza a sessão e retorna a nova sugestão e probabilidades."""
     data = request.get_json()
+    
     new_contadores = session.get('contadores', {'suspeitos': {}, 'armas': {}, 'locais': {}})
     new_revelados = session.get('revelados', {'suspeitos': [], 'armas': [], 'locais': []})
 
@@ -100,21 +125,23 @@ def atualizar_estado():
     session['contadores'] = new_contadores
     session['revelados'] = new_revelados
     session.modified = True
-    nova_sugestao = calcular_sugestao(new_contadores, new_revelados)
-    return jsonify({'success': True, 'sugestao': nova_sugestao})
 
+    nova_sugestao = calcular_sugestao(new_contadores, new_revelados)
+    novas_probabilidades = calcular_probabilidades(new_contadores, new_revelados)
+    
+    return jsonify({'success': True, 'sugestao': nova_sugestao, 'probabilidades': novas_probabilidades})
+
+# O resto do ficheiro (resetar, finalizar, historico) permanece igual
 @app.route('/resetar')
 def resetar():
-    """Limpa os dados da sessão e redireciona para a página inicial."""
     iniciar_estado_jogo()
     return redirect(url_for('index'))
 
 @app.route('/finalizar', methods=['POST'])
 def finalizar():
-    """Salva o resultado final da partida no histórico."""
     data = request.get_json()
     partida = {
-        'nome_jogador': session.get('nome_jogador', 'Anónimo'), # PONTO 3: Adiciona o nome do jogador
+        'nome_jogador': session.get('nome_jogador', 'Anónimo'),
         'suspeito': data.get('suspeito'),
         'arma': data.get('arma'),
         'local': data.get('local'),
@@ -122,13 +149,12 @@ def finalizar():
     }
     historico = session.get('historico', [])
     historico.insert(0, partida)
-    session['historico'] = historico[:10] # Garante que apenas os 10 últimos são guardados
+    session['historico'] = historico[:10]
     iniciar_estado_jogo()
     return jsonify({'success': True})
 
 @app.route('/historico')
 def historico():
-    """Exibe a página com o histórico das últimas partidas."""
     return render_template('historico.html', historico=session.get('historico', []))
 
 if __name__ == '__main__':

@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detetive - Painel de Anotações</title>
-  <!-- Adicionado '?v=1.6' para forçar o carregamento do CSS novo -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.6">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.5">
 </head>
 <body>
   <div class="container">
@@ -50,7 +49,8 @@
         </div>
 
         <div class="acoes">
-          <a href="{{ url_for('resetar') }}">Novo Jogo</a>
+          <!-- CLASSE ADICIONADA AQUI -->
+          <a href="{{ url_for('resetar') }}" class="btn-acao">Novo Jogo</a>
           <button type="button" id="btn-abrir-modal-finalizar" class="btn-acao">Finalizar</button>
           <a href="{{ url_for('historico') }}" class="btn-acao">Histórico</a>
         </div>
@@ -58,6 +58,7 @@
     </div>
   </div>
 
+  <!-- Modal para Finalizar Jogo -->
   <div id="finalizarModal" class="modal" style="display:none;">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
